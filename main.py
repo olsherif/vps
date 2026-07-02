@@ -2,7 +2,6 @@ import os
 import asyncio
 from contextlib import asynccontextmanager
 from pyrogram import Client, filters
-from pyrogram.storage import MemoryStorage
 from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 import uvicorn
@@ -14,13 +13,12 @@ ADMIN_CHAT_ID = 5458291853
 
 PORT = int(os.environ.get("PORT", 8000))
 
-# الحل الصحيح: تمرير اسم الجلسة داخل MemoryStorage لمنع الكراش
+# التعديل الجديد: تشغيل الجلسة في الذاكرة عبر وضع ":memory:" كاسم للبوت مباشرة
 bot = Client(
-    "olmep_bot", 
+    ":memory:", 
     api_id=API_ID, 
     api_hash=API_HASH, 
-    bot_token=BOT_TOKEN,
-    storage=MemoryStorage("olmep_session")
+    bot_token=BOT_TOKEN
 )
 
 file_db = {}
@@ -32,7 +30,7 @@ async def lifespan(app: FastAPI):
     bot.loop = loop
     
     await bot.start()
-    print("🚀 البوت انطلق بنجاح مئة بالمئة...")
+    print("🚀 البوت انطلق بنجاح مئة بالمئة مع التحديث الجديد...")
     yield
     try:
         await bot.stop()
@@ -87,7 +85,7 @@ async def stream_file(file_id: int):
 
 @app.get("/")
 async def root():
-    return {"status": "Running perfectly with named MemoryStorage"}
+    return {"status": "Running perfectly with memory mode"}
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=PORT)
