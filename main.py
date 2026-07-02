@@ -14,25 +14,25 @@ ADMIN_CHAT_ID = 5458291853
 
 PORT = int(os.environ.get("PORT", 8000))
 
-# تهيئة البوت بدون تشغيل فوري
+# الحل الصحيح: تمرير اسم الجلسة داخل MemoryStorage لمنع الكراش
 bot = Client(
     "olmep_bot", 
     api_id=API_ID, 
     api_hash=API_HASH, 
     bot_token=BOT_TOKEN,
-    storage=MemoryStorage()
+    storage=MemoryStorage("olmep_session")
 )
 
 file_db = {}
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # حل مشكلة بايثون 3.13: ربط البوت بالـ Loop الحالية للسيرفر إجبارياً
+    # ربط البوت بـ Async Loop الخاصة بالسيرفر للتوافق الكامل
     loop = asyncio.get_running_loop()
     bot.loop = loop
     
     await bot.start()
-    print("🚀 البوت انطلق بنجاح وأصلحنا توافق بايثون 3.13...")
+    print("🚀 البوت انطلق بنجاح مئة بالمئة...")
     yield
     try:
         await bot.stop()
@@ -87,8 +87,7 @@ async def stream_file(file_id: int):
 
 @app.get("/")
 async def root():
-    return {"status": "Running perfectly"}
+    return {"status": "Running perfectly with named MemoryStorage"}
 
 if __name__ == "__main__":
-    # تشغيل الخادم بالطريقة القياسية المتوافقة مع Koyeb
     uvicorn.run("main:app", host="0.0.0.0", port=PORT)
