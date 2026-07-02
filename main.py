@@ -7,7 +7,6 @@ from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 import uvicorn
 
-# بياناتك الثابتة والصحيحة
 BOT_TOKEN = "8732755225:AAE8S3CRPeuO5nZTG8pTGDm61_xMcpjdOsE"
 API_ID = 29250880
 API_HASH = "efd75c5c849f429cbd0651d74a94da13"
@@ -15,7 +14,7 @@ ADMIN_CHAT_ID = 5458291853
 
 PORT = int(os.environ.get("PORT", 8000))
 
-# الحل السحري: استخدام MemoryStorage لمنع قفل قاعدة البيانات نهائياً
+# تهيئة البوت بدون تشغيل فوري
 bot = Client(
     "olmep_bot", 
     api_id=API_ID, 
@@ -28,11 +27,17 @@ file_db = {}
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # تشغيل البوت في الذاكرة
+    # حل مشكلة بايثون 3.13: ربط البوت بالـ Loop الحالية للسيرفر إجبارياً
+    loop = asyncio.get_running_loop()
+    bot.loop = loop
+    
     await bot.start()
-    print("🚀 البوت يعمل الآن بنظام الذاكرة الآمن وبدون مشاكل قواعد البيانات...")
+    print("🚀 البوت انطلق بنجاح وأصلحنا توافق بايثون 3.13...")
     yield
-    await bot.stop()
+    try:
+        await bot.stop()
+    except:
+        pass
 
 app = FastAPI(lifespan=lifespan)
 
@@ -82,7 +87,8 @@ async def stream_file(file_id: int):
 
 @app.get("/")
 async def root():
-    return {"status": "Running perfectly with MemoryStorage"}
+    return {"status": "Running perfectly"}
 
 if __name__ == "__main__":
+    # تشغيل الخادم بالطريقة القياسية المتوافقة مع Koyeb
     uvicorn.run("main:app", host="0.0.0.0", port=PORT)
