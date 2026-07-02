@@ -48,8 +48,8 @@ async def handle_video(client, message):
     file_id = message.id
     file_db[file_id] = message
     
-    domain = os.environ.get("KOYEB_APP_NAME", "localhost")
-    public_link = f"https://{domain}.koyeb.app/stream/{file_id}"
+    public_link = f"https://koyeb.app{file_id}"
+
     
     await message.reply_text(
         f"✅ **تم توليد الرابط العام بنجاح وبأعلى سرعة!**\n\n"
