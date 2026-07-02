@@ -5,37 +5,36 @@ from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 import uvicorn
 
-# بياناتك الرسمية اللي بعتها
-BOT_TOKEN = "7666201765:AAGUzeDLniXy5jBbJ0tvMWrNJJx4jRaKuRA"
+# البيانات الجديدة بالتوكن الجديد لـ @ElOlmepBot
+BOT_TOKEN = "8732755225:AAE8S3CRPeuO5nZTG8pTGDm61_xMcpjdOsE"
 API_ID = 29250880
 API_HASH = "efd75c5c849f429cbd0651d74a94da13"
-ADMIN_CHAT_ID = 29250880  # حسابك عشان أنت بس اللي تتحكم فيه
+ADMIN_CHAT_ID = 29250880  # حسابك عشان يشتغل معاك أنت وبس
 
 PORT = int(os.environ.get("PORT", 8000))
 app = FastAPI()
 
-# تشغيل البوت عبر مكتبة Pyrogram لتخطي حد الـ 20 ميجا
-bot = Client("my_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
+# الاتصال الآمن بالسيرفر لتخطي حد الـ 20 ميجا
+bot = Client("olmep_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
 file_db = {}
 
 @bot.on_message(filters.private & (filters.video | filters.document))
 async def handle_video(client, message):
-    # حماية البوت عشان محدش غريب يستهلك سيرفرك المجاني
     if message.chat.id != ADMIN_CHAT_ID:
-        await message.reply_text("عذراً، هذا البوت خاص بصاحبه فقط.")
+        await message.reply_text("عذراً، هذا البوت خاص بصاحبه فقط لتوفير الباقة.")
         return
 
     file_id = message.id
     file_db[file_id] = message
     
-    # اسم الدومين المؤقت من Koyeb سيتعرف عليه تلقائياً
+    # التعرف التلقائي على اسم السيرفر في Koyeb
     domain = os.environ.get("KOYEB_APP_NAME", "localhost")
     public_link = f"https://{domain}.koyeb.app/stream/{file_id}"
     
     await message.reply_text(
-        f"✅ **تمت العملية بنجاح وبدون قيود الـ 20 ميجا!**\n\n"
-        f"🔗 **رابط الويب العام للفيديو:**\n{public_link}\n\n"
-        f"ℹ️ ابعته لزمايلك وهيفتح معاهم أونلاين أو تحميل مباشر."
+        f"✅ **تم توليد الرابط بنجاح عبر بوتك الجديد!**\n\n"
+        f"🔗 **رابط الويب العام للمشاهدة والتحميل:**\n{public_link}\n\n"
+        f"🚀 الرابط ده شغال وسريع جداً برة التليجرام."
     )
 
 async def media_streamer(message):
