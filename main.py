@@ -2,11 +2,12 @@ import os
 import asyncio
 from contextlib import asynccontextmanager
 from pyrogram import Client, filters
+from pyrogram.storage import MemoryStorage
 from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 import uvicorn
 
-# بياناتك الصحيحة والثابتة
+# بياناتك الثابتة والصحيحة
 BOT_TOKEN = "8732755225:AAE8S3CRPeuO5nZTG8pTGDm61_xMcpjdOsE"
 API_ID = 29250880
 API_HASH = "efd75c5c849f429cbd0651d74a94da13"
@@ -14,18 +15,23 @@ ADMIN_CHAT_ID = 5458291853
 
 PORT = int(os.environ.get("PORT", 8000))
 
-# تهيئة بوت تليجرام
-bot = Client("olmep_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
+# الحل السحري: استخدام MemoryStorage لمنع قفل قاعدة البيانات نهائياً
+bot = Client(
+    "olmep_bot", 
+    api_id=API_ID, 
+    api_hash=API_HASH, 
+    bot_token=BOT_TOKEN,
+    storage=MemoryStorage()
+)
+
 file_db = {}
 
-# إدارة دورة حياة السيرفر لتشغيل البوت مع الويب بدون كراش
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # تشغيل البوت عند بدء السيرفر
+    # تشغيل البوت في الذاكرة
     await bot.start()
-    print("🚀 البوت بدأ العمل بنجاح مع خادم الويب...")
+    print("🚀 البوت يعمل الآن بنظام الذاكرة الآمن وبدون مشاكل قواعد البيانات...")
     yield
-    # إغلاق البوت عند إيقاف السيرفر
     await bot.stop()
 
 app = FastAPI(lifespan=lifespan)
@@ -36,24 +42,22 @@ async def handle_video(client, message):
         await message.reply_text("عذراً، هذا البوت خاص بصاحبه فقط.")
         return
 
-    # حفظ الرسالة في الذاكرة لتوليد الرابط
     file_id = message.id
     file_db[file_id] = message
     
-    # جلب رابط الدومين الخاص بك على Koyeb تلقائياً
     domain = os.environ.get("KOYEB_APP_NAME", "localhost")
     public_link = f"https://{domain}.koyeb.app/stream/{file_id}"
     
     await message.reply_text(
-        f"✅ **تم توليد الرابط العام بنجاح عبر بوتك الجديد!**\n\n"
-        f"🔗 **رابط الويب العام للمشاهدة والتحميل:**\n{public_link}\n\n"
-        f"🚀 الرابط ده شغال وسريع جداً برة التليجرام ويدعم الأحجام الكبيرة."
+        f"✅ **تم توليد الرابط العام بنجاح وبأعلى سرعة!**\n\n"
+        f"🔗 **رابط الويب العام:**\n{public_link}\n\n"
+        f"🚀 ابعته لزمايلك وهيفتح معاهم أونلاين أو تحميل مباشر."
     )
 
 @bot.on_message(filters.private & filters.text)
 async def handle_text(client, message):
     if message.chat.id == ADMIN_CHAT_ID:
-        await message.reply_text("👋 البوت شغال ومستقر 100%! ابعتلي الفيديو الخاص حالاُ وسأقوم بتحويله لرابط.")
+        await message.reply_text("👋 البوت مستقر وشغال 100%! حوّل لي فيديو المحاضرة الخاصة الآن وسأعطيك الرابط العام فوراً.")
 
 async def media_streamer(message):
     async for chunk in bot.download_media(message, block=True):
@@ -78,8 +82,7 @@ async def stream_file(file_id: int):
 
 @app.get("/")
 async def root():
-    return {"status": "Server is running perfectly"}
+    return {"status": "Running perfectly with MemoryStorage"}
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=PORT)
-
