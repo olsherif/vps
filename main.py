@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 import uvicorn
 
-BOT_TOKEN = "6377547688:AAF8uzZSqKwfOSeF-dwrtuKEZO_36moP-BE"
+BOT_TOKEN = "7451023917:AAFyi_FYWwCD6cAC02APZ0owDGGGgpb8Kuk"
 API_ID = 29250880
 API_HASH = "efd75c5c849f429cbd0651d74a94da13"
 ADMIN_CHAT_ID = 5458291853
