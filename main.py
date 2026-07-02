@@ -6,14 +6,13 @@ from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 import uvicorn
 
-BOT_TOKEN = "7451023917:AAFyi_FYWwCD6cAC02APZ0owDGGGgpb8Kuk"
+BOT_TOKEN = "8732755225:AAE8S3CRPeuO5nZTG8pTGDm61_xMcpjdOsE"
 API_ID = 29250880
 API_HASH = "efd75c5c849f429cbd0651d74a94da13"
 ADMIN_CHAT_ID = 5458291853
 
 PORT = int(os.environ.get("PORT", 8000))
 
-# التعديل الجديد: تشغيل الجلسة في الذاكرة عبر وضع ":memory:" كاسم للبوت مباشرة
 bot = Client(
     ":memory:", 
     api_id=API_ID, 
@@ -25,12 +24,10 @@ file_db = {}
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # ربط البوت بـ Async Loop الخاصة بالسيرفر للتوافق الكامل
     loop = asyncio.get_running_loop()
     bot.loop = loop
-    
     await bot.start()
-    print("🚀 البوت انطلق بنجاح مئة بالمئة مع التحديث الجديد...")
+    print("🚀 البوت انطلق بنجاح مئة بالمئة...")
     yield
     try:
         await bot.stop()
@@ -48,8 +45,8 @@ async def handle_video(client, message):
     file_id = message.id
     file_db[file_id] = message
     
+    # تثبيت الرابط يدوياً وبشكل كامل بدون أي متغيرات تسبب خطأ
     public_link = f"https://koyeb.app{file_id}"
-
     
     await message.reply_text(
         f"✅ **تم توليد الرابط العام بنجاح وبأعلى سرعة!**\n\n"
@@ -85,7 +82,7 @@ async def stream_file(file_id: int):
 
 @app.get("/")
 async def root():
-    return {"status": "Running perfectly with memory mode"}
+    return {"status": "Running perfectly"}
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=PORT)
