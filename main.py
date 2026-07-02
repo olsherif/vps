@@ -9,7 +9,7 @@ import uvicorn
 BOT_TOKEN = "8732755225:AAE8S3CRPeuO5nZTG8pTGDm61_xMcpjdOsE"
 API_ID = 29250880
 API_HASH = "efd75c5c849f429cbd0651d74a94da13"
-ADMIN_CHAT_ID = 29250880  # حسابك عشان يشتغل معاك أنت وبس
+ADMIN_CHAT_ID = 5458291853  # حسابك عشان يشتغل معاك أنت وبس
 
 PORT = int(os.environ.get("PORT", 8000))
 app = FastAPI()
